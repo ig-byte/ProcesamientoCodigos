@@ -5,6 +5,12 @@ import openpyxl
 import re
 from tkinter import filedialog
 
+# Definiciones
+patronBarcode_regex = re.compile(r'^\d{6}[A-Z]\d{7}$')
+indicesReporte = ["Archivo", "Fecha", "Usuario", "Zona", "Linea", "Tanda"]
+
+## testing
+var =1
 
 
 # Archivo excel
