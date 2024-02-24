@@ -8,25 +8,6 @@ from tkinter import filedialog
 # Definiciones
 patronBarcode_regex = re.compile(r'^\d{6}[A-Z]\d{7}$')
 indicesReporte = ["Archivo", "Fecha", "Usuario", "Zona", "Linea", "Tanda"]
-
-## testing
-var =1
-
-
-# Archivo excel
-libro_resultado = openpyxl.Workbook()
-hoja_resultado = libro_resultado.active
-hoja_resultado.append(["Archivo", "Fecha", "Usuario", "Zona", "Linea", "Tanda"])
-
-# Especifica la ruta de la carpeta que deseas listar
-carpeta_archivos = filedialog.askdirectory(title="Carpeta de destino Fecha")
-
-archivoReporte = carpeta_archivos.split("/")[-1]
-ruta_original = carpeta_archivos
-carpeta_destino = filedialog.askdirectory(title="Carpeta de destino Fecha - R")
-# Lista de archivos en la carpeta
-archivos = os.listdir(carpeta_archivos)
-
 listaUsuarios = {
     "02": "KCOSMING",
     "03": "MVARAS",
@@ -35,13 +16,29 @@ listaUsuarios = {
     "37": "TEMP1",
     "38": "TEMP2"
 }
-print("archivo\t\t\t-\tfecha\t-\tidUsuario\t-\tusuario\t-\tzona\t-\tlinea\t-\ttanda")
+
+# Archivo excel
+libro_resultado = openpyxl.Workbook()
+hoja_resultado = libro_resultado.active
+hoja_resultado.append(indicesReporte)
+
+# Especifica la ruta de la carpeta que deseas listar
+carpeta_archivos = filedialog.askdirectory(title="Carpeta de destino Fecha")    # Ruta de carpeta con fecha que contiene las listas del día.
+archivoReporte = carpeta_archivos.split("/")[-1]                                # Guarda el nombre de fecha de la carpeta de donde se extraen los archivos                            
+ruta_original = carpeta_archivos                                                # Directorio de la carpeta con fecha
+carpeta_destino = filedialog.askdirectory(title="Carpeta de destino Fecha - R") # Ruta de Carpeta con fecha con sufijo R en donde se guardarán los nuevos excel
+
+# Extrae la fecha del archivo
+fecha = carpeta_archivos.split("/")[-1]
+
+# Lista de archivos en la carpeta
+archivos = os.listdir(carpeta_archivos) # Listado de archivos
+
 # Iterar sobre cada archivo en la carpeta
 for archivo in archivos:
     ruta_completa = os.path.join(carpeta_archivos, archivo)
     # Extrae Fecha
-    fecha_temp = carpeta_archivos.split("/")
-    fecha = fecha_temp[len(fecha_temp)-1]
+
     # Verificar si es un archivo CSV
     if archivo.endswith('.csv'):
         # Leer el segundo valor de la segunda fila en el archivo CSV
@@ -78,7 +75,7 @@ for archivo in archivos:
             *****************************************************************
             """
             # Extrae Linea
-            patron_linea = re.compile(r'(LÍNEA|REPASO|LINEA|INICIO|TRK)(\d+)')
+            patron_linea = re.compile(r'(LÍNEA|REPASO|LINEA|INICIO|TRK|FILA)(\d+)')
 
             # Buscar todas las coincidencias en el texto
             coincidencias = patron_linea.findall(valor_rev1)
